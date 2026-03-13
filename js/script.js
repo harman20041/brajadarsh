@@ -19,50 +19,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Form Validation (if contact form exists)
+    // Contact Form Submission
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
-            let isValid = true;
-            const name = document.getElementById('name');
-            const email = document.getElementById('email');
-            const message = document.getElementById('message');
+        contactForm.addEventListener('submit', function() {
+            const timeField = document.getElementById('submissionTime');
+            if (timeField) {
+                const now = new Date();
+                
+                // Format for IST (Asia/Kolkata)
+                const options = {
+                    timeZone: 'Asia/Kolkata',
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: undefined,
+                    hour12: true
+                };
 
-            const nameError = document.getElementById('nameError');
-            const emailError = document.getElementById('emailError');
-            const messageError = document.getElementById('messageError');
+                const formatter = new Intl.DateTimeFormat('en-GB', options);
+                const parts = formatter.formatToParts(now);
+                
+                // DD-MM-YYYY HH:MM AM/PM (IST)
+                let day, month, year, hour, minute, dayPeriod;
+                parts.forEach(part => {
+                    if (part.type === 'day') day = part.value;
+                    if (part.type === 'month') month = part.value;
+                    if (part.type === 'year') year = part.value;
+                    if (part.type === 'hour') hour = part.value;
+                    if (part.type === 'minute') minute = part.value;
+                    if (part.type === 'dayPeriod') dayPeriod = part.value.toUpperCase();
+                });
 
-            // Reset errors
-            [nameError, emailError, messageError].forEach(err => err.style.display = 'none');
-
-            if (name.value.trim() === '') {
-                nameError.textContent = 'Name is required';
-                nameError.style.display = 'block';
-                isValid = false;
-            }
-
-            if (!validateEmail(email.value)) {
-                emailError.textContent = 'Please enter a valid email';
-                emailError.style.display = 'block';
-                isValid = false;
-            }
-
-            if (message.value.trim() === '') {
-                messageError.textContent = 'Message cannot be empty';
-                messageError.style.display = 'block';
-                isValid = false;
-            }
-
-            if (!isValid) {
-                e.preventDefault();
-            } else {
-                alert('Thank you for your message! We will get back to you soon.');
+                const formattedTime = `${day}-${month}-${year} ${hour}:${minute} ${dayPeriod} (IST)`;
+                timeField.value = formattedTime;
             }
         });
-    }
-
-    function validateEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(String(email).toLowerCase());
     }
 });

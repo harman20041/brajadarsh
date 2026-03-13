@@ -1,0 +1,13 @@
+{
+  "name": "brajadarsh-website",
+  "version": "1.0.0",
+  "description": "Braj Adarsh Vidya Mandir school website",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve ."
+  },
+  "dependencies": {
+    "serve": "^14.2.4"
+  }
+}
